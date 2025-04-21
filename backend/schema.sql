@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS task_completion_history (
     task_id INT NOT NULL,
     completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (completion_id),
-    FOREIGN KEY (task_id) REFERENCES tasks(task_id)
+    FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS followers (
