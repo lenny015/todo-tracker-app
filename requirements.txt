@@ -2,3 +2,6 @@ fastapi
 uvicorn
 asyncpg
 python-dotenv
+pydantic
+pydantic[email]
+bcrypt
