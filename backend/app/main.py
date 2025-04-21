@@ -1,16 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, status
 from app.db import connect_db, close_db
+from app.models import RegisterUser, LoginUser
 import os
 from pydantic import BaseModel, EmailStr, Field
 import bcrypt
 
 app = FastAPI()
 db_pool = None
-
-class RegisterUser(BaseModel):
-    user_name: str = Field(..., min_length=3, max_length=50)
-    user_email: EmailStr
-    password: str = Field(..., min_length=6)
 
 @app.on_event("startup")
 async def startup():
@@ -29,7 +25,7 @@ async def startup():
 async def shutdown():
     await close_db
     
-@app.post("/register")
+@app.post("/register", status_code=status.HTTP_201_CREATED)
 async def register_user(user: RegisterUser):
     async with db_pool.acquire() as conn:
         existing = await conn.fetchrow(
@@ -49,9 +45,31 @@ async def register_user(user: RegisterUser):
         """, user.user_name, user.user_email, hashed_password)
         
         return {
-            "Message": "User created",
+            "message": f"User '{inserted_user["user_name"]}' created",
             "user_id": inserted_user["user_id"],
             "user_name": inserted_user["user_name"],
             "user_email": inserted_user["user_email"],
             "user_privacy": inserted_user["user_privacy"]
+        }
+        
+@app.post("/login")
+async def login_user(user: LoginUser):
+    async with db_pool.acquire() as conn:
+        db_user = await conn.fetchrow(
+            "SELECT user_id, user_name, user_email, user_password, user_privacy FROM users WHERE user_name=$1",
+            user.user_name
+        )
+        
+        if not db_user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        if not bcrypt.checkpw(user.password.encode("utf-8"), db_user['user_password'].encode("utf-8")):
+            raise HTTPException(status_code=401, detail="Incorrect password")
+        
+        return {
+            "message": "Login successful",
+            "user_id": db_user["user_id"],
+            "user_name": db_user["user_name"],
+            "user_email": db_user["user_email"],
+            "user_privacy": db_user["user_privacy"]
         }

@@ -1,0 +1,10 @@
+from pydantic import BaseModel, EmailStr, Field
+
+class RegisterUser(BaseModel):
+    user_name: str = Field(..., min_length=3, max_length=50)
+    user_email: EmailStr
+    password: str = Field(..., min_length=6)
+    
+class LoginUser(BaseModel):
+    user_name: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6)
