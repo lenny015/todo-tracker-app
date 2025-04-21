@@ -1,8 +1,7 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException
 from app.db import connect_db, close_db
 from app.models import RegisterUser, LoginUser
 import os
-from pydantic import BaseModel, EmailStr, Field
 import bcrypt
 
 app = FastAPI()
@@ -25,7 +24,7 @@ async def startup():
 async def shutdown():
     await close_db
     
-@app.post("/register", status_code=status.HTTP_201_CREATED)
+@app.post("/register", status_code=201)
 async def register_user(user: RegisterUser):
     async with db_pool.acquire() as conn:
         existing = await conn.fetchrow(
