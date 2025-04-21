@@ -1,5 +1,5 @@
 from jose import JWTError, jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 from dotenv import load_dotenv
 
@@ -10,9 +10,9 @@ ALGORITHM = "HS256"
 
 def create_access_token(data: dict, expires_delta:timedelta = None):
     data_copy = data.copy()
-    expire = datetime.now(datetime.timezone.utc) + (expires_delta or timedelta(minutes=60))
+    expire = datetime.now(timezone.utc) + (expires_delta or timedelta(minutes=60))
     data_copy.update({"exp": expire})
-    return jwt.encode(data.copy (), JWT_KEY, ALGORITHM)
+    return jwt.encode(data_copy, JWT_KEY, ALGORITHM)
 
 def verify_token(token: str):
     try:
