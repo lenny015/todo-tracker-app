@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 JWT_KEY = os.getenv("JWT_KEY")
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("ALGORITHM")
 
 def create_access_token(data: dict, expires_delta:timedelta = None):
     data_copy = data.copy()

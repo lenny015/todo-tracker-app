@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, Header
 from app.db import connect_db, close_db
-from app.models import RegisterUser, LoginUser
+from app.models import RegisterUser, LoginUser, CreateTask
 from app.auth import create_access_token, verify_token
 import os
 import bcrypt
@@ -35,6 +35,15 @@ async def lifespan(app: FastAPI):
         print(f"Error during shutdown: {e}")
 
 app = FastAPI(lifespan=lifespan)
+
+def get_user_token(auth: str = Header(...)):
+    if not auth.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization")
+    token = auth[7:]
+    payload = verify_token(token)
+    if not payload:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    return payload["user_id"]
     
 @app.post("/register", status_code=201)
 async def register_user(user: RegisterUser):
@@ -87,4 +96,18 @@ async def login_user(user: LoginUser):
                 "user_email": db_user["user_email"],
                 "user_privacy": db_user["user_privacy"]
             }
+        }
+        
+@app.post("/tasks", status_code=201)
+async def create_task(task: CreateTask, user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        new_task = await conn.fetchrow("""
+            INSERT INTO tasks (user_id, title, description, due_date)
+            VALUES ($1, $2, $3, $4)
+            RETURNING task_id, title, description, status, due_date      
+            """, user_id, task.title, task.description, task.due_date)
+        
+        return {
+            "message": "Task created",
+            "task": dict(new_task)
         }
