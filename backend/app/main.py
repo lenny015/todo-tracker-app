@@ -1,7 +1,8 @@
-from fastapi import FastAPI, HTTPException, Depends, Header, Path
+from fastapi import FastAPI, HTTPException, Depends, Header, Path, Query
 from app.db import connect_db, close_db
 from app.models import RegisterUser, LoginUser, CreateTask
 from app.auth import create_access_token, verify_token
+from app.cors import setup_cors
 import os
 import bcrypt
 from datetime import timedelta, datetime
@@ -35,6 +36,7 @@ async def lifespan(app: FastAPI):
         print(f"Error during shutdown: {e}")
 
 app = FastAPI(lifespan=lifespan)
+setup_cors(app)
 
 def get_user_token(auth: str = Header(...)):
     if not auth.startswith("Bearer "):
@@ -133,3 +135,15 @@ async def complete_task(task_id: int = Path(...), user_id: int = Depends(get_use
             INSERT INTO task_completion_history (task_id, completed_at) VALUES
             ($1, $2)
             """, task_id, datetime.now())
+        
+@app.get("/tasks")
+async def get_tasks(user_id: int = Depends(get_user_token), status: str = Query("pending", regex="^(pending|completed)$")):
+    async with db_pool.acquire() as conn:
+        tasks = await conn.fetch("""
+            SELECT task_id, title, description, status, due_date, created_at
+            FROM tasks
+            WHERE user_id=$1 AND status=$2
+            ORDER BY due_date ASC
+            """, user_id, status)
+        
+        return [dict(task) for task in tasks]
