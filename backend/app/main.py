@@ -1,10 +1,10 @@
-from fastapi import FastAPI, HTTPException, Depends, Header
+from fastapi import FastAPI, HTTPException, Depends, Header, Path
 from app.db import connect_db, close_db
 from app.models import RegisterUser, LoginUser, CreateTask
 from app.auth import create_access_token, verify_token
 import os
 import bcrypt
-from datetime import timedelta
+from datetime import timedelta, datetime
 from contextlib import asynccontextmanager
 
 db_pool = None
@@ -111,3 +111,25 @@ async def create_task(task: CreateTask, user_id: int = Depends(get_user_token)):
             "message": "Task created",
             "task": dict(new_task)
         }
+        
+@app.post("/tasks/{task_id}/complete")
+async def complete_task(task_id: int = Path(...), user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        task = await conn.fetchrow("""
+            SELECT * FROM tasks WHERE task_id=$1 AND user_id=$2
+            """, task_id, user_id)
+        
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        if task["status"] == "completed":
+            raise HTTPException(status_code=400, detail="Task already completed")
+            
+        await conn.execute("""
+            UPDATE tasks SET status='completed' WHERE task_id=$1
+            """, task_id)
+            
+        await conn.execute("""
+            INSERT INTO task_completion_history (task_id, completed_at) VALUES
+            ($1, $2)
+            """, task_id, datetime.now())
