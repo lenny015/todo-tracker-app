@@ -147,3 +147,36 @@ async def get_tasks(user_id: int = Depends(get_user_token), status: str = Query(
             """, user_id, status)
         
         return [dict(task) for task in tasks]
+    
+@app.post("/follow/{following_user}")
+async def follow_user(following_user: int = Path(...), user_id = Depends(get_user_token)):
+    if user_id == following_user:
+        raise HTTPException(status_code=400, detail="Cannot follow yourself")
+    
+    async with db_pool.acquire() as conn:
+        try:
+            await conn.execute("""
+                INSERT INTO FOLLOWERS (follower_id, following_id)
+                VALUES ($1, $2)
+                """, user_id, following_user)
+        except Exception as e:
+            raise HTTPException(status_code=400, detail="Already following user")
+        
+    return {
+        "message": f"User {user_id} now following user {following_user}"
+    }
+    
+@app.delete("/unfollow/{unfollowing_user}")
+async def unfollow_user(unfollowing_user:int = Path(...), user_id = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        result = await conn.execute("""
+            DELETE FROM FOLLOWERS
+            WHERE follower_id = $1 AND following_id = $2
+            """, user_id, unfollowing_user)
+        
+        if result == "DELETE 0":
+            raise HTTPException(status_code=404, detail=f"User {user_id} not following {unfollowing_user}")
+
+    return {
+        "message": f"User {user_id} unfollowed {unfollowing_user}"
+    }
