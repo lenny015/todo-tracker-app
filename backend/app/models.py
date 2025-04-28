@@ -15,3 +15,8 @@ class CreateTask(BaseModel):
     title: str
     description: Optional[str] = None
     due_date: Optional[date] = None
+    
+class UpdateTask(BaseModel):
+    title: Optional[str] = None
+    description: Optional[str] = None
+    due_date: Optional[date] = None

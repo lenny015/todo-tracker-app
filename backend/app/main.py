@@ -1,6 +1,6 @@
-from fastapi import FastAPI, HTTPException, Depends, Header, Path, Query
+from fastapi import FastAPI, HTTPException, Depends, Header, Path, Query, Body
 from app.db import connect_db, close_db
-from app.models import RegisterUser, LoginUser, CreateTask
+from app.models import RegisterUser, LoginUser, CreateTask, UpdateTask
 from app.auth import create_access_token, verify_token
 from app.cors import setup_cors
 import os
@@ -180,3 +180,44 @@ async def unfollow_user(unfollowing_user:int = Path(...), user_id = Depends(get_
     return {
         "message": f"User {user_id} unfollowed {unfollowing_user}"
     }
+    
+@app.put("/tasks/{task_id}")
+async def update_task(task_id: int = Path(...), update_data: UpdateTask = Body(...), user_id = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        task = await conn.fetchrow("""
+            SELECT * FROM tasks WHERE task_id=$1 AND user_id=$2
+            """, task_id, user_id)
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found")
+        
+        fields = []
+        values = []
+        
+        if update_data.title is not None:
+            fields.append(f"title = ${len(values) + 1}")
+            values.append(update_data.title)
+        if update_data.description is not None:
+            fields.append(f"description = ${len(values) + 1}")
+            values.append(update_data.description)
+        if update_data.due_date is not None:
+            fields.append(f"due_date = ${len(values) + 1}")
+            values.append(update_data.due_date)
+            
+        if not fields:
+            raise HTTPException(status_code=400, detail="No fields to update")
+        
+        query = f"""
+            UPDATE tasks SET {', '. join(fields)}
+            WHERE task_id = ${len(values) + 1}
+        """
+        values.append(task_id)
+        
+        await conn.execute(query, *values)
+        
+        updated_task = await conn.fetchrow("""
+            SELECT task_id, title, description, status, due_date, created_at
+            FROM tasks
+            WHERE task_id=$1
+            """, task_id)
+        
+        return {"message": "Task updated", "task": dict(updated_task)}
