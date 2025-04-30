@@ -7,7 +7,8 @@ export default function Home() {
             <div className="banana-icon-container">
                 <LuBanana size={50} />
             </div>
-            <h1 className='home-title'>Todo Tracker App</h1>
+            <h1 className='home-title'>MonkeyDo</h1>
+            <h3>A To-Do List App</h3>
             <div className='home-buttons'>
                 <Link to="/login">
                     <button>Login</button>

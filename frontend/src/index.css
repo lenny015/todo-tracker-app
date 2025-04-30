@@ -73,30 +73,54 @@ label {
   margin-bottom: 0.3rem;
 }
 
-.home-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  text-align: center;
-}
-
-.banana-icon-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1rem; 
-}
-
 .home-title {
   font-size: 3rem;
   color: #F7EE7F;
-  margin-bottom: 2rem;
+  margin-bottom: 0.2rem; 
+}
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  padding: 1rem; 
+}
+
+.banana-icon-container {
+  margin-bottom: 1rem;
 }
 
 .home-buttons {
   display: flex;
   gap: 1.5rem;
+}
+
+.home-buttons button {
+  padding: 0.8rem 2rem;
+  background-color: #CB793A;
+  color: #F7EE7F;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.home-buttons button:hover {
+  background-color: #a55823;
+}
+
+.home-container h3 {
+  font-size: 1.5rem;
+  color: #F7EE7F;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .dashboard {
@@ -144,6 +168,7 @@ label {
   background-color: #31302B;
   color: #F7EE7F;
   overflow-y: auto;
+  max-height: 90vh;
 }
 
 .task-search {
