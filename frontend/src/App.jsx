@@ -5,8 +5,17 @@ import Dashboard from './pages/Dashboard';
 import Home from './pages/Home';
 import './App.css'
 
-function App() {
+const ProtectedRoute = ({children}) => {
   const token = localStorage.getItem('token');
+  return token ? children : <Navigate to='/login' replace/>
+};
+
+const PublicRoute = ({children}) => {
+  const token = localStorage.getItem('token');
+  return !token ? children : <Navigate to='/dashboard' replace/>
+};
+
+function App() {
 
   return (
     <Router>
@@ -14,15 +23,27 @@ function App() {
         <Route path="/" element={<Home />}/>
         <Route
           path="/login"
-          element={!token ? <Login /> : <Navigate to="/dashboard" replace/>}
+          element={
+            <PublicRoute>
+              <Login />
+            </PublicRoute>
+          }
         />
         <Route
           path="/register"
-          element={!token ? <Register /> : <Navigate to="/dashboard" replace/>}
+          element={
+            <PublicRoute>
+              <Register />
+            </PublicRoute>
+          }
         />
         <Route
           path="/dashboard"
-          element={!token ? <Dashboard /> : <Navigate to="/login" replace/>}
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
       </Routes>
     </Router>
