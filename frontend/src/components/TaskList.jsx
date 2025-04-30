@@ -1,4 +1,4 @@
-export default function TaskList({ tasks, search, onEditClick, onDeleteClick }) {
+export default function TaskList({ tasks, search, onEditClick, onDeleteClick, markTaskComplete }) {
     const filteredTasks = tasks.filter(task => 
         task?.title?.toLowerCase().includes(search.toLowerCase())
     );
@@ -18,6 +18,7 @@ export default function TaskList({ tasks, search, onEditClick, onDeleteClick }) 
                     </div>
 
                     <div className="task-actions">
+                        <button onClick={() => markTaskComplete(task.task_id)}>Complete</button>
                         <button onClick={() => onEditClick(task)}>Edit</button>
                         <button onClick={() => onDeleteClick(task.task_id)}>Delete</button>
                     </div>

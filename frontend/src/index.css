@@ -84,7 +84,7 @@ label {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   text-align: center;
   padding: 1rem; 
 }
@@ -203,7 +203,6 @@ label {
   max-width: 500px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
   color: #F7EE7F;
-  font-family: 'Inter', sans-serif;
 }
 
 .modal-content h2 {
@@ -355,7 +354,7 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   padding: 1rem;
 }
 
@@ -405,7 +404,7 @@ label {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 90vh;
   padding: 1rem;
 }
 

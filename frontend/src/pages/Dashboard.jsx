@@ -5,6 +5,9 @@ import Sidebar from '../components/Sidebar';
 import TaskEditMenu from '../components/TaskEditMenu';
 import TaskCreateMenu from '../components/TaskCreateMenu';
 import TaskList from '../components/TaskList';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const API = 'http://localhost:8000';
 
@@ -134,6 +137,23 @@ export default function Dashboard() {
         navigate('/');
       };
 
+      const markTaskComplete = async (taskId) => {
+        try {
+            const result = await axios.post(`${API}/tasks/${taskId}/complete`, {}, {
+                headers: {
+                    auth: `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            setTasks(prevTasks => prevTasks.filter(task => task.task_id !== taskId));
+            toast.success("Task marked as complete!");
+        } catch (error) {
+            console.error('Failed to mark task as complete', error.message);
+            toast.error("Failed to mark task as complete.");
+        }
+      } 
+
     return (
         <div className='dashboard'>
             <Sidebar onCreateClick={openCreate} onLogout={handleLogout} />
@@ -149,7 +169,8 @@ export default function Dashboard() {
                     tasks={filteredTasks}
                     search={search}
                     onEditClick={openEdit}
-                    onDeleteClick={handleDelete} />
+                    onDeleteClick={handleDelete}
+                    markTaskComplete={markTaskComplete} />
             </div>
             {showEdit && (
                 <TaskEditMenu
@@ -168,6 +189,7 @@ export default function Dashboard() {
                     onSubmit={handleCreateSubmit}
                 />
             )}
+        <ToastContainer position="bottom-right" autoClose={3000} />
         </div>
     );
 }
