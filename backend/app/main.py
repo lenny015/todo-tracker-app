@@ -148,6 +148,22 @@ async def get_tasks(user_id: int = Depends(get_user_token), status: str = Query(
         
         return [dict(task) for task in tasks]
     
+@app.delete("/tasks/{task_id}")
+async def delete_task(task_id: int = Path(...), user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        task = await conn.fetchrow("""
+            SELECT * FROM tasks WHERE task_id=$1 AND user_id=$2
+        """, task_id, user_id)
+
+        if not task:
+            raise HTTPException(status_code=404, detail="Task not found or unauthorized")
+
+        await conn.execute("""
+            DELETE FROM tasks WHERE task_id=$1
+        """, task_id)
+
+    return {"message": f"Task {task_id} deleted successfully"}
+    
 @app.post("/follow/{following_user}")
 async def follow_user(following_user: int = Path(...), user_id = Depends(get_user_token)):
     if user_id == following_user:

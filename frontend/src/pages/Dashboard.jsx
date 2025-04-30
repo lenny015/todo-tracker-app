@@ -107,6 +107,20 @@ export default function Dashboard() {
         }
       };
 
+      const handleDelete = async (taskId) => {
+        try {
+            await axios.delete(`${API}/tasks/${taskId}`, {
+                headers: {
+                    auth: `Bearer ${token}`,
+                },
+            });
+
+            setTasks(prevTasks => prevTasks.filter(task => task.task_id !== taskId));
+        } catch (error) {
+            console.error("Failed to delete task", error);
+        }
+      };
+
     return (
         <div>
             <Sidebar onCreateClick={openCreate} />
@@ -117,7 +131,11 @@ export default function Dashboard() {
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                     />
-                <TaskList tasks={filteredTasks} search={search} onEditClick={openEdit} />
+                <TaskList 
+                    tasks={filteredTasks}
+                    search={search}
+                    onEditClick={openEdit}
+                    onDeleteClick={handleDelete} />
             </div>
             {showEdit && (
                 <TaskEditMenu
