@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -8,6 +9,11 @@ export default function Register() {
     });
 
     const [message, setMessage] = useState(null);
+    const [success, setSuccess] = useState(false);
+
+    useEffect(() => {
+        localStorage.removeItem('token');
+    }, []);
 
     const handleChange = (e) => {
         setFormData(prev => ({
@@ -33,6 +39,7 @@ export default function Register() {
 
             if (result.ok) {
                 setMessage('Sucessfully registered');
+                setSuccess(true);
             } else {
                 setMessage(data.detail || "Error registering");
             }
@@ -73,6 +80,12 @@ export default function Register() {
             </form>
 
             {message && <p>{message}</p>}
+
+            {success && (
+                <p>
+                    <Link to="/login">Go to Login</Link>
+                </p>
+            )}
         </div>
     );
 }

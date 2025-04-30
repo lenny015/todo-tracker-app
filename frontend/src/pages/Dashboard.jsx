@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import Sidebar from '../components/Sidebar';
+import TaskEditMenu from '../components/TaskEditMenu';
+import TaskCreateMenu from '../components/TaskCreateMenu';
+import TaskList from '../components/TaskList';
 
 const API = 'http://localhost:8000';
 
@@ -10,6 +14,8 @@ export default function Dashboard() {
     const [editTask , setEditTask] = useState(null);
     const [editForm, setEditForm] = useState({ title: '', description: '', due_date: '' });
     const [showEdit, setShowEdit] = useState(false);
+    const [showCreate, setShowCreate] = useState(false);
+    const [createForm, setCreateForm] = useState({ title: '', description: '', due_date: '' });
 
     const token = localStorage.getItem('token');
 
@@ -70,60 +76,66 @@ export default function Dashboard() {
         }
     };
 
+    const openCreate = () => {
+        setCreateForm({ title: '', description: '', due_date: '' });
+        setShowCreate(true);
+      };
+    
+      const closeCreate = () => {
+        setShowCreate(false);
+      };
+    
+      const handleCreateSubmit = async (e) => {
+        e.preventDefault();
+        try {
+          const result = await axios.post(`${API}/tasks`, createForm, {
+            headers: {
+              auth: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (result.data?.task) {
+            const newTask = result.data.task;
+            setTasks(prevTasks => [...prevTasks, newTask]);
+            closeCreate();
+          } else {
+            console.error("Created task does not have valid title or other data", result.data);
+          }
+        } catch (error) {
+          console.error("Failed to create task", error.message);
+        }
+      };
+
     return (
         <div>
-            <h1>Dashboard</h1>
-
-            <input
-                type="text"
-                placeholder="Search tasks..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-            />
-
-            <ul>
-                {filteredTasks.length > 0 ? (
-                    filteredTasks.map(task => (
-                        <li key={task.task_id}>
-                            <h2>{task.title}</h2>
-                            <p>{task.description}</p>
-                            <p>Due: {new Date(task.due_date).toLocaleDateString()}</p>
-                            <button onClick={() => openEdit(task)}>Edit</button>
-                        </li>
-                    ))
-                    ) : (
-                    <p>No tasks found.</p>
-                    )}
-            </ul>
-
+            <Sidebar onCreateClick={openCreate} />
+            <div>
+                <input
+                    type="text"
+                    placeholder="Search tasks..."
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                    />
+                <TaskList tasks={filteredTasks} search={search} onEditClick={openEdit} />
+            </div>
             {showEdit && (
-                <div>
-                    <form onSubmit={handleEditSubmit}>
-                        <h2>Edit Task</h2>
-                        <label>Title</label>
-                        <input 
-                            type="text"
-                            value={editForm.title}
-                            onChange={e => setEditForm({...editForm, title:e.target.value})}
-                        />
-                        <label>Description</label>
-                        <textarea
-                            value={editForm.description}
-                            onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                        />
-                        <label>Due Date</label>
-                        <input
-                            type="date"
-                            value={editForm.due_date}
-                            onChange={e => setEditForm({ ...editForm, due_date: e.target.value })}
-                        />
-
-                        <button type="button" onClick={closeEdit}>Cancel</button>
-                        <button type="submit">Save</button>
-                    </form>
-                </div>
+                <TaskEditMenu
+                    form={editForm}
+                    setForm={setEditForm}
+                    onClose={closeEdit}
+                    onSubmit={handleEditSubmit}
+                />
             )}
-      
+
+            {showCreate && (
+                <TaskCreateMenu
+                    form={createForm}
+                    setForm={setCreateForm}
+                    onClose={closeCreate}
+                    onSubmit={handleCreateSubmit}
+                />
+            )}
         </div>
-    )
+    );
 }
