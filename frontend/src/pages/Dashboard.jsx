@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import TaskEditMenu from '../components/TaskEditMenu';
@@ -18,6 +19,7 @@ export default function Dashboard() {
     const [createForm, setCreateForm] = useState({ title: '', description: '', due_date: '' });
 
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchTasks = async () => {
@@ -30,6 +32,12 @@ export default function Dashboard() {
                 setTasks(result.data);
                 setFilteredTasks(result.data);
             } catch (error) {
+
+                if (error.response && error.response.status === 401) {
+                    localStorage.removeItem('token');
+                    navigate('/');
+                }
+
                 console.error("Failed to fetch tasks: ", error.message);
             }
         };
@@ -121,12 +129,18 @@ export default function Dashboard() {
         }
       };
 
+      const handleLogout = () => {
+        localStorage.removeItem('token');
+        navigate('/');
+      };
+
     return (
-        <div>
-            <Sidebar onCreateClick={openCreate} />
-            <div>
+        <div className='dashboard'>
+            <Sidebar onCreateClick={openCreate} onLogout={handleLogout} />
+            <div className='task-section'>
                 <input
                     type="text"
+                    className="task-search"
                     placeholder="Search tasks..."
                     value={search}
                     onChange={e => setSearch(e.target.value)}

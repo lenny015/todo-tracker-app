@@ -1,10 +1,11 @@
 export default function TaskEditMenu({ form, setForm, onClose, onSubmit }) {
     return (
-        <div>
-            <form onSubmit={onSubmit}>
+        <div className="modal-overlay">
+            <form className="modal-content" onSubmit={onSubmit}>
                 <h2>Edit Task</h2>
                 <label>Title</label>
                 <input 
+                    className="large-input"
                     type="text"
                     value={form.title}
                     onChange={e => setForm({...form, title:e.target.value})}
@@ -16,13 +17,16 @@ export default function TaskEditMenu({ form, setForm, onClose, onSubmit }) {
                 />
                 <label>Due Date</label>
                 <input
+                    className="small-input"
                     type="date"
                     value={form.due_date}
                     onChange={e => setForm({ ...form, due_date: e.target.value })}
                 />
 
-                <button type="button" onClick={onClose}>Cancel</button>
-                <button type="submit">Save</button>
+                <div className="button-group">
+                    <button type="submit">Save</button>
+                    <button type="button" onClick={onClose}>Cancel</button>
+                </div>
             </form>
         </div>
     )

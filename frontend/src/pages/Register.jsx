@@ -50,42 +50,44 @@ export default function Register() {
     };
 
     return (
-        <div>
-            <h2>Register</h2>
-            <form onSubmit={handleSubmit}>
-                <input
-                    name="user_name"
-                    placeholder="Username"
-                    value={formData.user_name}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="user_email"
-                    type="email"
-                    placeholder="Email"
-                    value={formData.user_email}
-                    onChange={handleChange}
-                    required
-                />
-                <input
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
-                <button type="submit">Register</button>
-            </form>
+        <div className="register-container">
+            <div className="register-card">
+                <h2>Register</h2>
+                <form onSubmit={handleSubmit}>
+                    <input
+                        name="user_name"
+                        placeholder="Username"
+                        value={formData.user_name}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        name="user_email"
+                        type="email"
+                        placeholder="Email"
+                        value={formData.user_email}
+                        onChange={handleChange}
+                        required
+                    />
+                    <input
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                    <button type="submit">Register</button>
+                </form>
 
-            {message && <p>{message}</p>}
+                {message && <p>{message}</p>}
 
-            {success && (
-                <p>
-                    <Link to="/login">Go to Login</Link>
-                </p>
-            )}
+                {success && (
+                    <p>
+                        <Link to="/login">Go to Login</Link>
+                    </p>
+                )}
+            </div>
         </div>
     );
 }

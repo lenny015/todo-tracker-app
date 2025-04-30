@@ -32,12 +32,25 @@ export default function Login() {
     };
 
     return (
-        <div>
-            <h2>Login</h2>
-            {error && <p>{error}</p>}
-            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" />
-            <input value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" type="password" />
-            <button onClick={handleLogin}>Login</button>
+        <div className="login-container">
+            <div className="login-card">
+                <h2>Login</h2>
+                {error && <p className="login-error">{error}</p>}
+                <label>Username</label>
+                <input
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your username"
+                />
+                <label>Password</label>
+                <input
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    type="password"
+                />
+                <button onClick={handleLogin} className="login-button">Login</button>
+            </div>
         </div>
     );
 }
