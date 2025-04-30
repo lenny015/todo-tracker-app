@@ -82,6 +82,12 @@ label {
   text-align: center;
 }
 
+.banana-icon-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem; 
+}
+
 .home-title {
   font-size: 3rem;
   color: #F7EE7F;
@@ -329,14 +335,14 @@ label {
 }
 
 .login-card {
-  background-color: rgba(38, 37, 33, 0.95); /* darker with slight transparency */
+  background-color: rgba(38, 37, 33, 0.95);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   max-width: 400px;
   width: 100%;
   text-align: center;
-  backdrop-filter: blur(4px); /* subtle glass effect */
+  backdrop-filter: blur(4px);
 }
 
 
@@ -379,14 +385,14 @@ label {
 }
 
 .register-card {
-  background-color: rgba(38, 37, 33, 0.95); /* darker with slight transparency */
+  background-color: rgba(38, 37, 33, 0.95);
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
   max-width: 400px;
   width: 100%;
   text-align: center;
-  backdrop-filter: blur(4px); /* subtle glass effect */
+  backdrop-filter: blur(4px);
 }
 
 .register-card input {

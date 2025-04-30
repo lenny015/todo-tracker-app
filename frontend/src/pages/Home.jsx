@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
+import { LuBanana } from "react-icons/lu";
 
 export default function Home() {
     return (
         <div className="home-container">
+            <div className="banana-icon-container">
+                <LuBanana size={50} />
+            </div>
             <h1 className='home-title'>Todo Tracker App</h1>
             <div className='home-buttons'>
                 <Link to="/login">
