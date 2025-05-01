@@ -260,3 +260,19 @@ async def get_followers(user_id: int = Depends(get_user_token)):
         
     return {"follower_count": result[0]['count']}
 
+@app.get("/user/profile")
+async def get_user_profile(user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        user_profile = await conn.fetchrow("""
+            SELECT user_name, user_email, user_privacy
+            FROM users
+            WHERE user_id=$1
+        """, user_id)
+
+        if not user_profile:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        return {"user_name": user_profile["user_name"], 
+                "user_email": user_profile["user_email"], 
+                "user_privacy": user_profile["user_privacy"]}
+

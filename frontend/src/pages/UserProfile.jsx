@@ -9,12 +9,20 @@ const API = 'http://localhost:8000';
 export default function UserProfile() {
     const [followers, setFollowers] = useState(0);
     const [taskHistory, setTaskHistory] = useState([]);
+    const [userName, setUsername] = useState('');
 
     const token = localStorage.getItem('token');
 
     useEffect(() => {
         const fetchUserData = async () => {
             try {
+                const userProfile = await axios.get(`${API}/user/profile`, {
+                    headers: {
+                        auth: `Bearer ${token}`,
+                    },
+                });
+                setUsername(userProfile.data.user_name);
+
                 const followerCount = await axios.get(`${API}/user/followers`, {
                     headers: {
                         auth: `Bearer ${token}`
@@ -59,7 +67,7 @@ export default function UserProfile() {
         >
             <div className="user-layout">
                 <div className="sidebar">
-                    <h2>User Profile</h2>
+                    <h2>{userName}'s Profile</h2>
                     <div className="user-info">
                         <h3>Followers: {followers}</h3>
                     </div>
