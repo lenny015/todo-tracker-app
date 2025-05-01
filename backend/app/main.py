@@ -237,3 +237,26 @@ async def update_task(task_id: int = Path(...), update_data: UpdateTask = Body(.
             """, task_id)
         
         return {"message": "Task updated", "task": dict(updated_task)}
+    
+@app.get("/user/task_history")
+async def get_task_history(user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        task_history = await conn.fetch("""
+            SELECT completed_at::date, COUNT(*) AS tasks_completed
+            FROM task_completion_history
+            WHERE task_id IN (SELECT task_id FROM tasks WHERE user_id=$1)
+            GROUP BY completed_at::date
+            ORDER BY completed_at DESC
+        """, user_id)
+        
+    return {"task_history": [dict(i) for i in task_history]}
+
+@app.get("/user/followers")
+async def get_followers(user_id: int = Depends(get_user_token)):
+    async with db_pool.acquire() as conn:
+        result = await conn.fetch("""
+            SELECT COUNT(*) FROM followers WHERE following_id = $1              
+            """, user_id)
+        
+    return {"follower_count": result[0]['count']}
+

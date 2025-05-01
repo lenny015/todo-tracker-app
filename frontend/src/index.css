@@ -162,6 +162,25 @@ label {
   background-color: #e6dc5e;
 }
 
+.sidebar button + button {
+  margin-top: 1rem;
+}
+
+.sidebar .profile-button {
+  padding: 0.75rem;
+  background-color: #F7EE7F;
+  color: #31302B;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar .profile-button:hover {
+  background-color: #e6dc5e;
+}
+
 .task-section {
   flex: 1;
   padding: 2rem;
@@ -458,4 +477,75 @@ label {
 
 .register-card a:hover {
   text-decoration: underline;
+}
+
+.user-page {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 2rem;
+  background-color: #31302B;
+  min-height: 100vh;
+}
+
+.user-layout {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  background-color: #262521;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.user-info h3 {
+  font-size: 1.25rem;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem;
+  background-color: #31302B;
+  color: #F7EE7F;
+}
+
+.task-history-section {
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.task-history-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #F7EE7F;
+}
+
+
+.color-empty {
+  fill: #1f1e1a;
+  width: 3px;
+  height: 3px;
+}
+
+.color-scale-1 {
+  fill: #f4c27e;
+  width: 3px;
+  height: 3px;
+}
+
+.color-scale-2 {
+  fill: #f09a4a;
+  width: 3px;
+  height: 3px;
+}
+
+.color-scale-3 {
+  fill: #d77b1e;
+  width: 3px;
+  height: 3px;
+}
+
+.color-scale-4 {
+  fill: #cb5400;
+  width: 3px;
+  height: 3px;
 }

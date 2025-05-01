@@ -155,6 +155,10 @@ export default function Dashboard() {
         }
       } 
 
+      const handleProfileClick = () => {
+        navigate('profile');
+      };
+
     return (
         <motion.div className='dashboard'
             initial={{ opacity: 0, y: 20 }}
@@ -162,7 +166,7 @@ export default function Dashboard() {
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.4 }}
         >
-            <Sidebar onCreateClick={openCreate} onLogout={handleLogout} />
+            <Sidebar onCreateClick={openCreate} onLogout={handleLogout} onProfileClick={handleProfileClick} />
             <div className='task-section'>
                 <input
                     type="text"
