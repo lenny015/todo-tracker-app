@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import axios from 'axios';
 import Sidebar from '../components/Sidebar';
 import TaskEditMenu from '../components/TaskEditMenu';
@@ -155,7 +156,12 @@ export default function Dashboard() {
       } 
 
     return (
-        <div className='dashboard'>
+        <motion.div className='dashboard'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+        >
             <Sidebar onCreateClick={openCreate} onLogout={handleLogout} />
             <div className='task-section'>
                 <input
@@ -190,6 +196,6 @@ export default function Dashboard() {
                 />
             )}
         <ToastContainer position="bottom-right" autoClose={3000} />
-        </div>
+        </motion.div>
     );
 }

@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
@@ -15,12 +16,13 @@ const PublicRoute = ({children}) => {
   return !token ? children : <Navigate to='/dashboard' replace/>
 };
 
-function App() {
+function AnimatedRoutes() {
+  const location = useLocation();
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />}/>
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Home />} />
         <Route
           path="/login"
           element={
@@ -46,8 +48,16 @@ function App() {
           }
         />
       </Routes>
-    </Router>
-  )
+    </AnimatePresence>
+  );
 }
 
-export default App
+function App() {
+  return (
+    <Router>
+      <AnimatedRoutes />
+    </Router>
+  );
+}
+
+export default App;

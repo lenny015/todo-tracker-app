@@ -1,9 +1,15 @@
 import { Link } from 'react-router-dom';
 import { LuBanana } from "react-icons/lu";
+import { motion } from 'framer-motion';
 
 export default function Home() {
     return (
-        <div className="home-container">
+        <motion.div className="home-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+        >
             <div className="banana-icon-container">
                 <LuBanana size={50} />
             </div>
@@ -17,6 +23,6 @@ export default function Home() {
                     <button>Register</button>
                 </Link>
             </div>
-        </div>
+        </motion.div>
     )
 }

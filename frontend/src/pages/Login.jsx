@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import axios from '../api/axios';
 
 export default function Login() {
@@ -32,7 +33,12 @@ export default function Login() {
     };
 
     return (
-        <div className="login-container">
+        <motion.div className="login-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+        >
             <div className="login-card">
                 <h2>Login</h2>
                 {error && <p className="login-error">{error}</p>}
@@ -51,6 +57,6 @@ export default function Login() {
                 />
                 <button onClick={handleLogin} className="login-button">Login</button>
             </div>
-        </div>
+        </motion.div>
     );
 }

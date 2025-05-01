@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
 export default function Register() {
     const [formData, setFormData] = useState({
@@ -50,7 +51,12 @@ export default function Register() {
     };
 
     return (
-        <div className="register-container">
+        <motion.div className="register-container"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.4 }}
+        >
             <div className="register-card">
                 <h2>Register</h2>
                 <form onSubmit={handleSubmit}>
@@ -88,6 +94,6 @@ export default function Register() {
                     </p>
                 )}
             </div>
-        </div>
+        </motion.div>
     );
 }
